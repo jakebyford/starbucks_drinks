@@ -92,7 +92,7 @@ def submit_form():
         # 'budget': request.form['budget']
     }
     # Save the preferred_drink object to the database
-    db.preferred_drinks.insert_one(preferred_drink)
+    collection.insert_one(preferred_drink)
     recommendations = coffee_similarity(preferred_drink['preferredDrink'])
     drink_names = data['drink_name']
     descriptions = data['description']

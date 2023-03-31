@@ -92,13 +92,13 @@ def submit_form():
 
     # Create a new preferred_drink object with the encoded features
     preferred_drink = {
-        'preferredDrink': request.form['drink'],
+        'preferredDrink': request.form['drink']
         # 'flavorNotes': flavor_notes_encoded,
         # 'brewingMethod': request.form['brewMethod'],
         # 'budget': request.form['budget']
     }
     # Save the preferred_drink object to the database
-    collection.insert_one(preferred_drink)
+    db.preferred_drinks.insert_one(preferred_drink)
     recommendations = coffee_similarity(preferred_drink['preferredDrink'])
     drink_names = data['drink_name']
     descriptions = data['description']

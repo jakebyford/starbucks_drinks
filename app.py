@@ -1,13 +1,19 @@
 from flask import Flask, request, render_template, redirect
 import pandas as pd
 import pymongo
+from config import user, password
 
 app = Flask(__name__)
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 
 # MongoDB configuration
-client = pymongo.MongoClient('mongodb://localhost:27017/')
+# client = pymongo.MongoClient('mongodb://localhost:27017/')
+# db = client['coffee_db']
+
+
+client = pymongo.MongoClient(f"mongodb+srv://{user}:{password}@cluster0.nrodsk8.mongodb.net/?retryWrites=true&w=majority")
 db = client['coffee_db']
+
 collection = db['preferred_drinks']
 data = pd.read_csv("coffee_descriptions.csv")
 data.drop_duplicates(subset=['drink_name'], inplace=True)

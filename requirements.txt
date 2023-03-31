@@ -60,7 +60,7 @@ idna==2.10
 imbalanced-learn==0.10.1
 imblearn==0.0
 isort==5.7.0
-itsdangerous==2.1.2
+itsdangerous==2.0.1
 joblib 
 jupyterlab-flake8==0.7.1
 lazy-object-proxy==1.4.3

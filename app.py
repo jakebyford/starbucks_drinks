@@ -10,9 +10,14 @@ app.config['TEMPLATES_AUTO_RELOAD'] = True
 # MongoDB configuration
 # client = pymongo.MongoClient('mongodb://localhost:27017/')
 # db = client['coffee_db']
+username = os.environ.get('MONGODB_USER')
+password = os.environ.get('MONGODB_PASSWORD')
+
+client = pymongo.MongoClient(f'mongodb+srv://{username}:{password}@cluster0.nrodsk8.mongodb.net/coffee_db?retryWrites=true&w=majority')
+# db = client.test
 
 # load_dotenv()
-client = pymongo.MongoClient(os.environ.get('MONGO_URI'))
+# client = MongoClient(os.environ.get('MONGO_URI'), server_api=ServerApi('1'))
 
 db = client['coffee_db']
 

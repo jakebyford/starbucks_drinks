@@ -3,20 +3,19 @@ argon2-cffi==21.1.0
 attrs==21.2.0
 backcall==0.2.0
 bleach==4.1.0
-Bottleneck @ file:///C:/Windows/Temp/abs_3198ca53-903d-42fd-87b4-03e6d03a8381yfwsuve8/croots/recipe/bottleneck_1657175565403/work
-cffi==1.15.0
+Bottleneck
 click==8.1.3
 colorama==0.4.4
-cryptography @ file:///C:/b/abs_8ecplyc3n2/croot/cryptography_1677533105000/work
+cryptography 
 cycler==0.11.0
 debugpy==1.5.1
 decorator==5.1.0
 defusedxml==0.7.1
-dnspython @ file:///home/conda/feedstock_root/build_artifacts/dnspython_1673812078720/work
+dnspython
 entrypoints==0.3
 Flask==2.2.3
 gunicorn==20.1.0
-idna @ file:///home/conda/feedstock_root/build_artifacts/idna_1663625384323/work
+idna 
 importlib-metadata==4.8.1
 ipykernel==6.5.0
 ipython==7.29.0
@@ -45,7 +44,7 @@ nbformat==5.1.3
 nest-asyncio==1.5.1
 nose==1.3.7
 notebook==6.4.5
-numexpr @ file:///D:/bld/numexpr_1658076548128/work
+numexpr 
 numpy==1.21.3
 packaging==21.2
 pandas==1.3.4
@@ -61,7 +60,7 @@ pymongo==3.12.0
 pyparsing==2.4.7
 pyrsistent==0.18.0
 python-dateutil==2.8.2
-python-dotenv @ file:///home/conda/feedstock_root/build_artifacts/python-dotenv_1677227146928/work
+python-dotenv 
 pytz==2021.3
 pywinpty==1.1.5
 pyzmq==22.3.0

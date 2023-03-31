@@ -1,0 +1,52 @@
+<!-- <!DOCTYPE html>
+<h1>You chose the <p>{{ preferred_drink['preferredDrink'] }}</p></h1>
+<p>Description: 
+    {% for i in description %}
+        {{ i }}
+    {% endfor %}
+</p>
+<h3>You Might Also Like:</h3>
+<body>
+    <p>{% for coffee in recommendations %}
+        <li>{{ coffee }}</li>
+        {% endfor %}
+    </p>
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Starbucks Recommendation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+      h1, h3 {
+        text-align: center;
+      }
+
+      p {
+        text-align: justify;
+        padding: 0 10px;
+      }
+
+      li {
+        margin: 10px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>You chose the <span>{{ preferred_drink['preferredDrink'] }}</span></h1>
+    <p>Description: 
+      {% for i in description %}
+        {{ i }}
+      {% endfor %}
+    </p>
+    <h3>You Might Also Like:</h3>
+    <ul>
+      {% for coffee in recommendations %}
+        <li>{{ coffee }}</li>
+      {% endfor %}
+    </ul>
+  </body>
+</html>

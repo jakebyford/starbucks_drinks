@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Starbucks Drink Survey</title>
+    <style>
+      table {
+        /* border-collapse: collapse; */
+        width: 100%;
+      }
+
+      h1 {
+        text-align: center;
+      }
+
+      table td, table th {
+        text-align: center;
+      }
+
+      th, td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+      }
+      
+      th {
+        background-color: #f2f2f2;
+      }
+
+      button {
+        padding: 8px;
+      }
+    </style>
+    <script>
+      function validateForm() {
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        let valid = true;
+        for (let i = 0; i < checkboxes.length; i++) {
+          const checkbox = checkboxes[i];
+          const rating = document.querySelector(`input[name="rating${i + 1}"]:checked`).value;
+          if (!checkbox.checked && rating !== "N/A") {
+            valid = false;
+            break;
+          }
+        }
+        if (!valid) {
+          alert("Please select a rating only if you have tried the coffee drink.");
+        }
+        return valid;
+      }
+      function setupEventListeners() {
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        const radios = document.querySelectorAll('input[type="radio"]');
+        checkboxes.forEach((checkbox) => {
+          checkbox.addEventListener("change", validateForm);
+        });
+        radios.forEach((radio) => {
+          radio.addEventListener("change", validateForm);
+        });
+      }
+      
+      window.addEventListener("load", setupEventListeners);
+    </script>
+  </head>
+  <body>
+    <h1>Starbucks Drink Survey</h1>
+    <form method="POST" onsubmit="return validateForm()" action="/survey">
+      <table>
+        <thead>
+          <tr>
+            <th>Coffee Drink</th>
+            <th>Have you had it?</th>
+            <th colspan="6" style="text-align: center;">Rating</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- <tr>
+            <td>Coffee Drink 1</td>
+            <td><input type="checkbox" name="drink1" value="1"></td>
+            <td>
+              <label><input type="radio" name="rating1" value="1"> 1</label>
+              <label><input type="radio" name="rating1" value="2"> 2</label>
+              <label><input type="radio" name="rating1" value="3"> 3</label>
+              <label><input type="radio" name="rating1" value="4"> 4</label>
+              <label><input type="radio" name="rating1" value="5"> 5</label>
+              <label><input type="radio" name="rating1" value="N/A" checked> N/A</label>
+            </td>
+          </tr>
+          <tr>
+            <td>Coffee Drink 2</td>
+            <td><input type="checkbox" name="drink2" value="1"></td>
+            <td>
+              <label><input type="radio" name="rating2" value="1"> 1</label>
+              <label><input type="radio" name="rating2" value="2"> 2</label>
+              <label><input type="radio" name="rating2" value="3"> 3</label>
+              <label><input type="radio" name="rating2" value="4"> 4</label>
+              <label><input type="radio" name="rating2" value="5"> 5</label>
+              <label><input type="radio" name="rating2" value="N/A" checked> N/A</label>
+            </td>
+          </tr>
+          <tr>
+            <td>Coffee Drink 3</td>
+            <td><input type="checkbox" name="drink3" value="1"></td>
+            <td>
+              <label><input type="radio" name="rating3" value="1"> 1</label>
+              <label><input type="radio" name="rating3" value="2"> 2</label>
+              <label><input type="radio" name="rating3" value="3"> 3</label>
+              <label><input type="radio" name="rating3" value="4"> 4</label>
+              <label><input type="radio" name="rating3" value="5"> 5</label>
+              <label><input type="radio" name="rating3" value="N/A" checked> N/A</label>
+            </td>
+          </tr> -->
+          {% for index, item in coffees %}
+          <tr>
+            <td>{{ item }}</td>
+            <td><input type="checkbox" name="drink{{ index + 1 }}" value="1"></td>
+            {% for j in range(1, 6) %}
+            <td>
+              <label><input type="radio" name="rating{{ index + 1}}" value="{{ j }}"> {{ j }}</label> 
+            {% endfor %}
+              <label><input type="radio" name="rating{{ index + 1}}" value="N/A" checked> N/A</label>
+            </td> 
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <p></p>
+      <button type="submit">Submit</button>
+    </form>
+  </body>
+</html>
+

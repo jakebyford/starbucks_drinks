@@ -1,0 +1,96 @@
+<!-- <!DOCTYPE html>
+<h1>Starbucks Recommendation Form</h1>
+<form method="POST" action="/submit-form">
+    <label for="drink">Preferred Starbucks Drink:</label>
+    <select id="drink" name="drink">
+    {% for coffee in data['drink_name'] %}
+        <option value="{{ coffee }}">{{ coffee }}</option>
+    {% endfor %}
+    </select><br><br> -->
+
+    <!-- <label for="flavorNotes">Flavor Notes You Like:</label><br>
+    <input type="checkbox" class="flavorNotes" name="flavorNotes" value="fruity">
+    <label for="flavorNotes">Fruity</label><br>
+    <input type="checkbox" class="flavorNotes" class="flavorNotes" name="flavorNotes" value="chocolaty">
+    <label for="flavorNotes">Chocolaty</label><br>
+    <input type="checkbox" class="flavorNotes" class="flavorNotes" name="flavorNotes" value="nutty">
+    <label for="flavorNotes">Nutty</label><br><br>
+
+    <label for="brewMethod">Preferred Brewing Method:</label>
+    <select id="brewMethod" name="brewMethod">
+    <option value="drip">Drip</option>
+    <option value="french-press">French Press</option>
+    <option value="espresso">Espresso</option>
+    </select><br><br>
+
+    <label for="budget">Budget:</label>
+    <input type="radio" class="budget" name="budget" value="under-10">
+    <label for="budget">Under $10</label><br>
+    <input type="radio" class="budget" class="budget" name="budget" value="10-20">
+    <label for="budget">$10-$20</label><br>
+    <input type="radio" class="budget" class="budget" name="budget" value="over-20">
+    <label for="budget">Over $20</label><br><br> -->
+
+    <!-- <button type="submit">Submit</button>
+</form>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Starbucks Recommendation Form</title>
+    <style>
+      body {
+        font-size: 1.2rem;
+        margin: 0;
+        padding: 0;
+      }
+
+      h1 {
+        text-align: center;
+        margin-top: 2rem;
+      }
+
+      form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 2rem;
+      }
+
+      label {
+        margin-bottom: 1rem;
+      }
+
+      select {
+        width: 100%;
+        padding: 0.5rem;
+        margin-bottom: 1rem;
+        font-size: 1.2rem;
+      }
+
+      button {
+        padding: 0.5rem 1rem;
+        background-color: #00704a;
+        color: white;
+        border: none;
+        border-radius: 0.25rem;
+        font-size: 1.2rem;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Starbucks Recommendation Form</h1>
+    <form method="POST" action="/submit-form">
+      <label for="drink">Preferred Starbucks Drink:</label>
+      <select id="drink" name="drink">
+        {% for coffee in data['drink_name'] %}
+        <option value="{{ coffee }}">{{ coffee }}</option>
+        {% endfor %}
+      </select>
+      <button type="submit">Submit</button>
+    </form>
+  </body>
+</html>

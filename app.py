@@ -7,7 +7,7 @@ import os
 app = Flask(__name__)
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 
-# MongoDB configuration
+# MongoDB configuration 
 # client = pymongo.MongoClient('mongodb://localhost:27017/')
 # db = client['coffee_db']
 username = os.environ.get('MONGODB_USER')
@@ -89,7 +89,7 @@ def submit_form():
     # Encode flavor notes using one-hot encoding
     # flavor_notes = request.form.getlist('flavorNotes')
     # flavor_notes_encoded = oneHotEncodeFlavorNotes(flavor_notes)
-    
+
     # Create a new preferred_drink object with the encoded features
     preferred_drink = {
         'preferredDrink': request.form['drink'],

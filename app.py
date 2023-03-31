@@ -8,7 +8,7 @@ app = Flask(__name__)
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 
 # MongoDB configuration
-# client = pymongo.MongoClient('mongodb://localhost:27017/')
+# client = pymongo.MongoClient('mongodb://localhost:27017/') 
 # db = client['coffee_db']
 username = os.environ.get('MONGODB_USER')
 password = os.environ.get('MONGODB_PASSWORD')

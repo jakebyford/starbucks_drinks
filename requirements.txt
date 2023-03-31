@@ -1,12 +1,15 @@
 astroid==2.4.2
 autoflake==1.7.8
 beautifulsoup4==4.9.3
-cffi
+brotlipy @ file:///D:/bld/brotlipy_1666764815687/work
+certifi==2022.12.7
+cffi @ file:///D:/bld/cffi_1671179514672/work
 chardet==3.0.4
+charset-normalizer @ file:///home/conda/feedstock_root/build_artifacts/charset-normalizer_1661170624537/work
 click==8.1.3
-cryptography 
+cryptography @ file:///D:/bld/cryptography-split_1679811407000/work
 dlint==0.14.0
-dnspython 
+dnspython @ file:///home/conda/feedstock_root/build_artifacts/dnspython_1673812078720/work
 doc8==0.11.2
 docformatter==1.5.1
 flake8-2020==1.6.1
@@ -58,30 +61,40 @@ imbalanced-learn==0.10.1
 imblearn==0.0
 isort==5.7.0
 itsdangerous==2.1.2
-joblib==1.2.0
+joblib @ file:///home/conda/feedstock_root/build_artifacts/joblib_1663332044897/work
 jupyterlab-flake8==0.7.1
 lazy-object-proxy==1.4.3
 lxml==4.6.2
 MarkupSafe==2.1.2
 mccabe==0.6.1
 numpy==1.22.4
-pandas 
+packaging @ file:///home/conda/feedstock_root/build_artifacts/packaging_1673482170163/work
+pandas @ file:///D:/bld/pandas_1680107775856/work
 pandas-vet==0.2.3
+platformdirs @ file:///home/conda/feedstock_root/build_artifacts/platformdirs_1679871349196/work
+pooch @ file:///home/conda/feedstock_root/build_artifacts/pooch_1679580333621/work
 pybrowsers==0.4.1
-pycparser 
+pycparser @ file:///home/conda/feedstock_root/build_artifacts/pycparser_1636257122734/work
 pyLDAvis==3.4.0
 pylint==2.6.0
-pymongo 
-python-dateutil
+pymongo @ file:///D:/bld/pymongo_1668739698825/work
+pyOpenSSL @ file:///home/conda/feedstock_root/build_artifacts/pyopenssl_1680037383858/work
+PySocks @ file:///D:/bld/pysocks_1661604991356/work
+python-dateutil @ file:///tmp/build/80754af9/python-dateutil_1626374649649/work
 python-dev-tools==2022.5.27
 python-dotenv==0.20.0
-pytz 
-scikit-learn==1.0.2
-six 
+pytz @ file:///home/conda/feedstock_root/build_artifacts/pytz_1680088766131/work
+requests @ file:///home/conda/feedstock_root/build_artifacts/requests_1673863902341/work
+scikit-learn @ file:///D:/bld/scikit-learn_1679676068685/work
+scipy==1.10.1
+six @ file:///tmp/build/80754af9/six_1644875935023/work
 soupsieve==2.0.1
-threadpoolctl==3.1.0
+threadpoolctl @ file:///home/conda/feedstock_root/build_artifacts/threadpoolctl_1643647933166/work
 toml==0.10.2
 top2vec==1.0.28
+typing_extensions @ file:///home/conda/feedstock_root/build_artifacts/typing_extensions_1678559861143/work
+urllib3 @ file:///home/conda/feedstock_root/build_artifacts/urllib3_1678635778344/work
 webdriver-manager==3.8.0
 Werkzeug==2.2.3
+win-inet-pton @ file:///D:/bld/win_inet_pton_1667051142467/work
 wrapt==1.12.1

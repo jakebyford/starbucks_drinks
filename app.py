@@ -2,7 +2,7 @@ from flask import Flask, request, render_template, redirect
 import pandas as pd
 import pymongo
 import os
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 
 app = Flask(__name__)
 app.config['TEMPLATES_AUTO_RELOAD'] = True
@@ -11,10 +11,10 @@ app.config['TEMPLATES_AUTO_RELOAD'] = True
 # client = pymongo.MongoClient('mongodb://localhost:27017/')
 # db = client['coffee_db']
 
-load_dotenv()
-DATABASE_URL = f'mongodb+srv://{os.environ.get("user")}:{os.environ.get("pass")}@cluster0.nrodsk8.mongodb.net/coffee_db?retryWrites=true&w=majority'
-client = pymongo.MongoClient(DATABASE_URL)
-db = client.db
+# load_dotenv()
+client = pymongo.MongoClient(os.environ.get('MONGO_URI'))
+
+db = client['coffee_db']
 
 collection = db['preferred_drinks']
 data = pd.read_csv("coffee_descriptions.csv")

@@ -72,7 +72,7 @@ def index():
         # return 'Thanks for your response!'
     return render_template('index.html', coffees=coffees)
 
-@app.route('/survey-submission', methods=['GET'])
+@app.route('/survey-submission', methods=['GET', 'POST'])
 # def index():
 #     coffeeList = dropdown()
 #     return render_template('index.html', coffeeList=coffeeList)

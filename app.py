@@ -75,7 +75,9 @@ def index():
 # def index():
 #     coffeeList = dropdown()
 #     return render_template('index.html', coffeeList=coffeeList)
-
+def survey_submssion(data=data):
+    return render_template('survey-submssion.html', data=data)
+    
 def coffee_similarity(preferredDrink):
     import pandas as pd
     from sklearn.feature_extraction.text import TfidfVectorizer
@@ -101,9 +103,7 @@ def coffee_similarity(preferredDrink):
     query = preferredDrink
     recommendations = [i for i in (cosine_sim_df[query].sort_values(ascending=False)[1:6]).index]
     return recommendations
-def survey_submssion(data=data):
-    return render_template('survey-submssion.html', data=data)
-    
+
 @app.route('/submit-form', methods=['POST'])
 def submit_form():
     

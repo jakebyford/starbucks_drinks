@@ -51,7 +51,7 @@ data = data.reset_index(drop=True)
 
 
 @app.route('/', methods=['GET', 'POST'])
-def survey():
+def index():
     coffees = enumerate(data['drink_name'])
     if request.method == 'POST':
         ratings = []
@@ -68,7 +68,7 @@ def survey():
         }
 
         db.surveys.insert_one(responses)
-        return redirect('/survey-submission')
+        # return redirect('/survey-submission')
         # return 'Thanks for your response!'
     return render_template('index.html', coffees=coffees)
 
@@ -77,7 +77,7 @@ def survey():
 #     coffeeList = dropdown()
 #     return render_template('index.html', coffeeList=coffeeList)
 
-def index(data=data):
+def survey_submission(data=data):
     return render_template('survey-submssion.html', data=data)
 
 def coffee_similarity(preferredDrink):

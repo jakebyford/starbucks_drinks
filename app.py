@@ -49,15 +49,32 @@ data = data.reset_index(drop=True)
 #             encoding[2] = 1
 #     return encoding
 
+@app.route('/', methods=['GET', 'POST'])
+def index():
+    coffees = enumerate(data['drink_name'])
+    if request.method == 'POST':
+        ratings = []
+        drinks_tried = []
+        for index, items in coffees:
+            rating = request.form.get(f'rating{index+1}')
+            ratings.append(rating)
 
+            answer = request.form.get(f'drink{index+1}')
+            drinks_tried.append(answer)
+        responses = {
+            "drinks_tried": drinks_tried,
+            "ratings": ratings
+        }
 
-@app.route('/', methods=['GET'])
+        db.surveys.insert_one(responses)
+        return redirect('/survey-submission')
+        # return 'Thanks for your response!'
+    return render_template('index.html', coffees=coffees)
+
+@app.route('/survey-submssion', methods=['GET', 'POST'])
 # def index():
 #     coffeeList = dropdown()
 #     return render_template('index.html', coffeeList=coffeeList)
-
-def index(data=data):
-    return render_template('index.html', data=data)
 
 def coffee_similarity(preferredDrink):
     import pandas as pd
@@ -84,7 +101,9 @@ def coffee_similarity(preferredDrink):
     query = preferredDrink
     recommendations = [i for i in (cosine_sim_df[query].sort_values(ascending=False)[1:6]).index]
     return recommendations
-
+def survey_submssion(data=data):
+    return render_template('survey-submssion.html', data=data)
+    
 @app.route('/submit-form', methods=['POST'])
 def submit_form():
     
@@ -107,28 +126,6 @@ def submit_form():
     coffeeList = [ {'drink_name': drink_names[i], 'description': descriptions[i] } for i in range(len(drink_names)) ]
     description = [i['description'] for i in coffeeList if preferred_drink['preferredDrink'] == i['drink_name']]
     return render_template('submit.html', recommendations=recommendations, preferred_drink=preferred_drink, description=description)
-
-@app.route('/survey', methods=['GET', 'POST'])
-def survey():
-    coffees = enumerate(data['drink_name'])
-    if request.method == 'POST':
-        ratings = []
-        drinks_tried = []
-        for index, items in coffees:
-            rating = request.form.get(f'rating{index+1}')
-            ratings.append(rating)
-
-            answer = request.form.get(f'drink{index+1}')
-            drinks_tried.append(answer)
-        responses = {
-            "drinks_tried": drinks_tried,
-            "ratings": ratings
-        }
-
-        db.surveys.insert_one(responses)
-        return redirect('/')
-        # return 'Thanks for your response!'
-    return render_template('survey.html', coffees=coffees)
 
 # @app.route('/success', methods=['POST'])
 # def success():

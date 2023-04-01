@@ -126,7 +126,7 @@ def survey():
         }
 
         db.surveys.insert_one(responses)
-        return redirect('/thanks')
+        return redirect('/')
         # return 'Thanks for your response!'
     return render_template('survey.html', coffees=coffees)
 

@@ -1,6 +1,6 @@
 from flask import Flask, request, render_template, redirect
 import pandas as pd
-import pymongo
+from pymongo import MongoClient
 import os
 # from dotenv import load_dotenv
 
@@ -10,14 +10,16 @@ app.config['TEMPLATES_AUTO_RELOAD'] = True
 # MongoDB configuration
 # client = pymongo.MongoClient('mongodb://localhost:27017/') 
 # db = client['coffee_db']
-username = os.environ.get('MONGODB_USER')
-password = os.environ.get('MONGODB_PASSWORD')
+# username = os.environ.get('MONGODB_USER')
+# password = os.environ.get('MONGODB_PASSWORD')
 
-client = pymongo.MongoClient(f'mongodb+srv://{username}:{password}@cluster0.nrodsk8.mongodb.net/coffee_db?retryWrites=true&w=majority')
+mongo_uri = os.environ.get('MONGO_URI')
+
+# client = pymongo.MongoClient(f'mongodb+srv://{username}:{password}@cluster0.nrodsk8.mongodb.net/coffee_db?retryWrites=true&w=majority')
 # db = client.test
 
 # load_dotenv()
-# client = MongoClient(os.environ.get('MONGO_URI'), server_api=ServerApi('1'))
+client = MongoClient(mongo_uri)
 
 db = client['coffee_db']
 

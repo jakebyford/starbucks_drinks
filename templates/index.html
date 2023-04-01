@@ -1,95 +1,94 @@
-<!-- <!DOCTYPE html>
-<h1>Starbucks Recommendation Form</h1>
-<form method="POST" action="/submit-form">
-    <label for="drink">Preferred Starbucks Drink:</label>
-    <select id="drink" name="drink">
-    {% for coffee in data['drink_name'] %}
-        <option value="{{ coffee }}">{{ coffee }}</option>
-    {% endfor %}
-    </select><br><br> -->
-
-    <!-- <label for="flavorNotes">Flavor Notes You Like:</label><br>
-    <input type="checkbox" class="flavorNotes" name="flavorNotes" value="fruity">
-    <label for="flavorNotes">Fruity</label><br>
-    <input type="checkbox" class="flavorNotes" class="flavorNotes" name="flavorNotes" value="chocolaty">
-    <label for="flavorNotes">Chocolaty</label><br>
-    <input type="checkbox" class="flavorNotes" class="flavorNotes" name="flavorNotes" value="nutty">
-    <label for="flavorNotes">Nutty</label><br><br>
-
-    <label for="brewMethod">Preferred Brewing Method:</label>
-    <select id="brewMethod" name="brewMethod">
-    <option value="drip">Drip</option>
-    <option value="french-press">French Press</option>
-    <option value="espresso">Espresso</option>
-    </select><br><br>
-
-    <label for="budget">Budget:</label>
-    <input type="radio" class="budget" name="budget" value="under-10">
-    <label for="budget">Under $10</label><br>
-    <input type="radio" class="budget" class="budget" name="budget" value="10-20">
-    <label for="budget">$10-$20</label><br>
-    <input type="radio" class="budget" class="budget" name="budget" value="over-20">
-    <label for="budget">Over $20</label><br><br> -->
-
-    <!-- <button type="submit">Submit</button>
-</form>
-</html> -->
-
 <!DOCTYPE html>
-<html lang="en">
+<html>
   <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Starbucks Recommendation Form</title>
+    <title>Starbucks Drink Survey</title>
     <style>
-      body {
-        font-size: 1.2rem;
-        margin: 0;
-        padding: 0;
+      table {
+        /* border-collapse: collapse; */
+        width: 100%;
       }
 
       h1 {
         text-align: center;
-        margin-top: 2rem;
       }
 
-      form {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        margin-top: 2rem;
+      table td, table th {
+        text-align: center;
       }
 
-      label {
-        margin-bottom: 1rem;
+      th, td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
       }
-
-      select {
-        width: 100%;
-        padding: 0.5rem;
-        margin-bottom: 1rem;
-        font-size: 1.2rem;
+      
+      th {
+        background-color: #f2f2f2;
       }
 
       button {
-        padding: 0.5rem 1rem;
-        background-color: #00704a;
-        color: white;
-        border: none;
-        border-radius: 0.25rem;
-        font-size: 1.2rem;
+        padding: 8px;
       }
     </style>
+    <script>
+      function validateForm() {
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        let valid = true;
+        for (let i = 0; i < checkboxes.length; i++) {
+          const checkbox = checkboxes[i];
+          const rating = document.querySelector(`input[name="rating${i + 1}"]:checked`).value;
+          if (!checkbox.checked && rating !== "N/A") {
+            valid = false;
+            break;
+          }
+        }
+        if (!valid) {
+          alert("Please select a rating only if you have tried the coffee drink.");
+        }
+        return valid;
+      }
+      function setupEventListeners() {
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        const radios = document.querySelectorAll('input[type="radio"]');
+        checkboxes.forEach((checkbox) => {
+          checkbox.addEventListener("change", validateForm);
+        });
+        radios.forEach((radio) => {
+          radio.addEventListener("change", validateForm);
+        });
+      }
+      
+      window.addEventListener("load", setupEventListeners);
+    </script>
   </head>
   <body>
-    <h1>Starbucks Recommendation Form</h1>
-    <form method="POST" action="/submit-form">
-      <label for="drink">Preferred Starbucks Drink:</label>
-      <select id="drink" name="drink">
-        {% for coffee in data['drink_name'] %}
-        <option value="{{ coffee }}">{{ coffee }}</option>
-        {% endfor %}
-      </select>
+    <h1>Starbucks Drink Survey</h1>
+    <form method="POST" onsubmit="return validateForm()" action="/">
+      <table>
+        <thead>
+          <tr>
+            <th>Coffee Drink</th>
+            <th>Have you had it?</th>
+            <th colspan="6" style="text-align: center;">Rating</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for index, item in coffees %}
+          <tr>
+            <td>{{ item }}</td>
+            <td><input type="checkbox" name="drink{{ index + 1 }}" value="1"></td>
+            {% for j in range(1, 6) %}
+            <td>
+              <label><input type="radio" name="rating{{ index + 1}}" value="{{ j }}"> {{ j }}</label> 
+            {% endfor %}
+              <label><input type="radio" name="rating{{ index + 1}}" value="N/A" checked> N/A</label>
+            </td> 
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <p></p>
       <button type="submit">Submit</button>
     </form>
   </body>

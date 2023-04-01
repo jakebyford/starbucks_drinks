@@ -7,16 +7,16 @@ import os
 app = Flask(__name__)
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 
-# MongoDB configuration
+# MongoDB configuration for localhost
 # client = pymongo.MongoClient('mongodb://localhost:27017/') 
 # db = client['coffee_db']
-# username = os.environ.get('MONGODB_USER')
-# password = os.environ.get('MONGODB_PASSWORD')
 
+
+# Set up Config var in Heroku under app Settings. Here's an example:
+# MONGO_URI = mongodb+srv://{username}:{password}@cluster0.nrodsk8.mongodb.net/{database_name}?retryWrites=true&w=majority'
+#
+# Here we are calling the Config variable we created in Heroku: 'MONGO_URI'
 mongo_uri = os.environ.get('MONGO_URI')
-
-# client = pymongo.MongoClient(f'mongodb+srv://{username}:{password}@cluster0.nrodsk8.mongodb.net/coffee_db?retryWrites=true&w=majority')
-# db = client.test
 
 # load_dotenv()
 client = MongoClient(mongo_uri)
@@ -50,14 +50,35 @@ data = data.reset_index(drop=True)
 #     return encoding
 
 
+@app.route('/', methods=['GET', 'POST'])
+def survey():
+    coffees = enumerate(data['drink_name'])
+    if request.method == 'POST':
+        ratings = []
+        drinks_tried = []
+        for index, items in coffees:
+            rating = request.form.get(f'rating{index+1}')
+            ratings.append(rating)
 
-@app.route('/', methods=['GET'])
+            answer = request.form.get(f'drink{index+1}')
+            drinks_tried.append(answer)
+        responses = {
+            "drinks_tried": drinks_tried,
+            "ratings": ratings
+        }
+
+        db.surveys.insert_one(responses)
+        return redirect('/survey-submission')
+        # return 'Thanks for your response!'
+    return render_template('index.html', coffees=coffees)
+
+@app.route('/survey-submission', methods=['GET'])
 # def index():
 #     coffeeList = dropdown()
 #     return render_template('index.html', coffeeList=coffeeList)
 
 def index(data=data):
-    return render_template('index.html', data=data)
+    return render_template('survey-submssion.html', data=data)
 
 def coffee_similarity(preferredDrink):
     import pandas as pd
@@ -108,28 +129,6 @@ def submit_form():
     description = [i['description'] for i in coffeeList if preferred_drink['preferredDrink'] == i['drink_name']]
     return render_template('submit.html', recommendations=recommendations, preferred_drink=preferred_drink, description=description)
 
-@app.route('/survey', methods=['GET', 'POST'])
-def survey():
-    coffees = enumerate(data['drink_name'])
-    if request.method == 'POST':
-        ratings = []
-        drinks_tried = []
-        for index, items in coffees:
-            rating = request.form.get(f'rating{index+1}')
-            ratings.append(rating)
-
-            answer = request.form.get(f'drink{index+1}')
-            drinks_tried.append(answer)
-        responses = {
-            "drinks_tried": drinks_tried,
-            "ratings": ratings
-        }
-
-        db.surveys.insert_one(responses)
-        return redirect('/thanks')
-        # return 'Thanks for your response!'
-    return render_template('survey.html', coffees=coffees)
-
 # @app.route('/success', methods=['POST'])
 # def success():
 #     return redirect(url_for('thanks'))
@@ -137,15 +136,6 @@ def survey():
 @app.route('/thanks')
 def thanks():
     return 'Thanks for submitting the form!'
-
-# def get_roast_level_number(preferredDrink):
-#     switcher = {
-#         'light': 1,
-#         'medium': 2,
-#         'dark': 3
-#     }
-#     return switcher.get(preferredDrink, 0)
-
 
 if __name__ == "__main__":
     app.run(debug=True)

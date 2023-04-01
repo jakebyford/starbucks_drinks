@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, redirect, url_for
+from flask import Flask, request, render_template, redirect
 import pandas as pd
 from pymongo import MongoClient
 import os
@@ -15,7 +15,7 @@ app.config['TEMPLATES_AUTO_RELOAD'] = True
 # Set up Config var in Heroku under app Settings. Here's an example:
 # MONGO_URI = mongodb+srv://{username}:{password}@cluster0.nrodsk8.mongodb.net/{database_name}?retryWrites=true&w=majority'
 #
-# Here we are calling the Config variable we created in Heroku: 'MONGO_URI'
+# Here we are calling the Config variable we created in  'MONGO_URI'
 mongo_uri = os.environ.get('MONGO_URI')
 
 # load_dotenv()
@@ -49,34 +49,15 @@ data = data.reset_index(drop=True)
 #             encoding[2] = 1
 #     return encoding
 
-@app.route('/', methods=['GET', 'POST'])
-def index():
-    coffees = enumerate(data['drink_name'])
-    if request.method == 'POST':
-        ratings = []
-        drinks_tried = []
-        for index, items in coffees:
-            rating = request.form.get(f'rating{index+1}')
-            ratings.append(rating)
 
-            answer = request.form.get(f'drink{index+1}')
-            drinks_tried.append(answer)
-        responses = {
-            "drinks_tried": drinks_tried,
-            "ratings": ratings
-        }
 
-        db.surveys.insert_one(responses)
-        return redirect(url_for('/survey-submission'))
-        # return 'Thanks for your response!'
-    return render_template('index.html', coffees=coffees)
-
-@app.route('/survey-submssion', methods=['GET', 'POST'])
+@app.route('/', methods=['GET'])
 # def index():
 #     coffeeList = dropdown()
 #     return render_template('index.html', coffeeList=coffeeList)
-def survey_submssion(data=data):
-    return render_template('survey-submssion.html', data=data)
+
+def index(data=data):
+    return render_template('index.html', data=data)
 
 def coffee_similarity(preferredDrink):
     import pandas as pd
@@ -126,6 +107,28 @@ def submit_form():
     coffeeList = [ {'drink_name': drink_names[i], 'description': descriptions[i] } for i in range(len(drink_names)) ]
     description = [i['description'] for i in coffeeList if preferred_drink['preferredDrink'] == i['drink_name']]
     return render_template('submit.html', recommendations=recommendations, preferred_drink=preferred_drink, description=description)
+
+@app.route('/survey', methods=['GET', 'POST'])
+def survey():
+    coffees = enumerate(data['drink_name'])
+    if request.method == 'POST':
+        ratings = []
+        drinks_tried = []
+        for index, items in coffees:
+            rating = request.form.get(f'rating{index+1}')
+            ratings.append(rating)
+
+            answer = request.form.get(f'drink{index+1}')
+            drinks_tried.append(answer)
+        responses = {
+            "drinks_tried": drinks_tried,
+            "ratings": ratings
+        }
+
+        db.surveys.insert_one(responses)
+        return redirect('/thanks')
+        # return 'Thanks for your response!'
+    return render_template('survey.html', coffees=coffees)
 
 # @app.route('/success', methods=['POST'])
 # def success():

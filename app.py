@@ -67,9 +67,10 @@ def index():
         }
 
         db.surveys.insert_one(responses)
-        return redirect('/survey-submission')
+        
         # return 'Thanks for your response!'
-    return render_template('index.html', coffees=coffees)
+        return render_template('index.html', coffees=coffees)
+    return redirect('/survey-submission')
 
 @app.route('/survey-submssion', methods=['GET', 'POST'])
 # def index():
@@ -77,7 +78,7 @@ def index():
 #     return render_template('index.html', coffeeList=coffeeList)
 def survey_submssion(data=data):
     return render_template('survey-submssion.html', data=data)
-    
+
 def coffee_similarity(preferredDrink):
     import pandas as pd
     from sklearn.feature_extraction.text import TfidfVectorizer

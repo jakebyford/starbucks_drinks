@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, redirect
+from flask import Flask, request, render_template, redirect, url_for
 import pandas as pd
 from pymongo import MongoClient
 import os
@@ -67,10 +67,9 @@ def index():
         }
 
         db.surveys.insert_one(responses)
-        
+        return redirect(url_for('/survey-submission'))
         # return 'Thanks for your response!'
-        return render_template('index.html', coffees=coffees)
-    return redirect('/survey-submission')
+    return render_template('index.html', coffees=coffees)
 
 @app.route('/survey-submssion', methods=['GET', 'POST'])
 # def index():

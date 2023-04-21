@@ -82,8 +82,8 @@ def coffee_similarity(preferredDrink):
 
 def user_similarity():
     
-    user = os.environ.get('USER')
-    password = os.environ.get('PASS')
+    user = str(os.environ.get('USER'))
+    password = str(os.environ.get('PASS'))
     cluster = MongoClient(f"mongodb+srv://{user}:{password}@cluster0.nrodsk8.mongodb.net/coffee_db?retryWrites=true&w=majority")
     db = cluster['coffee_db']
     surveys = db['surveys']

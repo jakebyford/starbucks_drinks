@@ -129,7 +129,7 @@ def user_similarity():
     # Convert the similarity matrix to a Pandas DataFrame
     item_similarity_df = pd.DataFrame(item_similarity, index=clean_ratings_df.columns, columns=clean_ratings_df.columns)
 
-    def get_top_similar_items(item_id, similarity_matrix, n=5):
+    def get_top_similar_items(item_id, similarity_matrix, n=3):
         # Get the similarity scores for the given item
         item_similarity_scores = similarity_matrix[item_id]
 
@@ -142,7 +142,7 @@ def user_similarity():
         return similar_items
 
     # Function to make recommendations for a given user
-    def make_recommendations(user_id, similarity_matrix, ratings_df, n=5):
+    def make_recommendations(user_id, similarity_matrix, ratings_df, n=3):
         # Get the ratings given by the user
         user_ratings = ratings_df.loc[user_id]
 
@@ -164,7 +164,7 @@ def user_similarity():
         recommendations = list(set(recommendations) - set(rated_items))
         
         # Randomly choose n items from the list 
-        recommendations = random.sample(recommendations, n) 
+        recommendations = random.sample(recommendations, 5) 
 
         return recommendations
 

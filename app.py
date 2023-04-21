@@ -78,7 +78,7 @@ def coffee_similarity(preferredDrink):
     # Print the cosine similarity matrix
     cosine_sim_df = cosine_sim_df.sort_values(by=[query], ascending=False)
     query = preferredDrink
-    recommendations = [i for i in (cosine_sim_df[query].sort_values(ascending=False)[1:6]).index]
+    recommendations = [i for i in (cosine_sim_df[query].sort_values(ascending=False)[1:4]).index]
     return recommendations
 
 def user_similarity():
@@ -164,7 +164,7 @@ def user_similarity():
         recommendations = list(set(recommendations) - set(rated_items))
         
         # Randomly choose n items from the list 
-        recommendations = random.sample(recommendations, 5) 
+        recommendations = random.sample(recommendations, n) 
 
         return recommendations
 

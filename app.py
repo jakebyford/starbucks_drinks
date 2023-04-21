@@ -172,7 +172,7 @@ def user_similarity():
     # Make recommendations for user with user_id=1, using item-item similarity matrix
     user_id = clean_ratings_df[-1:].index[0]
     similarity_matrix = item_similarity_df # Use the converted DataFrame
-    recommendations = make_recommendations(user_id, similarity_matrix, clean_ratings_df, n=5)
+    recommendations = make_recommendations(user_id, similarity_matrix, clean_ratings_df, n=3)
 
     return recommendations
 

@@ -33,8 +33,16 @@ data = pd.read_csv("coffee_descriptions.csv")
 data.drop_duplicates(subset=['drink_name'], inplace=True)
 data = data.reset_index(drop=True)
 
-# def user_collab_filtering
+# get database and collections(tables)
+user = str(os.environ.get('USER'))
+password = str(os.environ.get('PASS'))
+cluster = MongoClient(f"mongodb+srv://{user}:{password}@cluster0.nrodsk8.mongodb.net/coffee_db?retryWrites=true&w=majority")
+db = cluster['coffee_db']
+surveys = db['surveys']
+surveys = list(surveys.find())
+surveys = pd.DataFrame(surveys)
 
+clean_drink_names = [i for i in data['drink_name']]
 
 # def oneHotEncodeFlavorNotes(flavorNotes):
 #     # Array with length equal to the number of flavor notes you want to encode
@@ -59,11 +67,6 @@ def index(data=data):
     return render_template('index.html', data=data)
 
 def coffee_similarity(preferredDrink):
-
-    # Load the data
-    data = pd.read_csv("coffee_descriptions.csv")
-    data.drop_duplicates(subset=['drink_name'], inplace=True)
-    data = data.reset_index(drop=True)
     # Preprocess the text
     vectorizer = TfidfVectorizer(stop_words='english')
     X = vectorizer.fit_transform(data['description'])
@@ -81,15 +84,7 @@ def coffee_similarity(preferredDrink):
     recommendations = [i for i in (cosine_sim_df[query].sort_values(ascending=False)[1:4]).index]
     return recommendations
 
-def user_similarity():
-    
-    user = str(os.environ.get('USER'))
-    password = str(os.environ.get('PASS'))
-    cluster = MongoClient(f"mongodb+srv://{user}:{password}@cluster0.nrodsk8.mongodb.net/coffee_db?retryWrites=true&w=majority")
-    db = cluster['coffee_db']
-    surveys = db['surveys']
-    surveys = list(surveys.find())
-    surveys = pd.DataFrame(surveys)
+def get_users():
     users = [i for i in surveys['_id']]
 
     # clean the users
@@ -100,6 +95,9 @@ def user_similarity():
         count += 1
         clean_users.append(new_id)
 
+    return clean_users
+
+def get_ratings():
     ratings = [i for i in surveys['ratings']]
 
     clean_ratings = []
@@ -121,60 +119,57 @@ def user_similarity():
             clean_i.append(j)
         clean_ratings.append(clean_i)
 
-    clean_drink_names = [i for i in data['drink_name']]
-    clean_ratings_df = pd.DataFrame(clean_ratings, index=clean_users, columns=clean_drink_names)
+    clean_ratings_df = pd.DataFrame(clean_ratings, index=get_users(), columns=clean_drink_names)
+    return clean_ratings_df
 
-    # Compute item-item similarity using cosine similarity
-    item_similarity = cosine_similarity(clean_ratings_df.fillna(0).T)
-    # Convert the similarity matrix to a Pandas DataFrame
-    item_similarity_df = pd.DataFrame(item_similarity, index=clean_ratings_df.columns, columns=clean_ratings_df.columns)
+def clean_ratings_cosine_similarity(clean_ratings_df = get_ratings()):
+    clean_ratings_cosine_similarity = cosine_similarity(clean_ratings_df.fillna(0))
+    # clean_ratings_cosine_similarity.reset_index(inplace=True)
 
-    def get_top_similar_items(item_id, similarity_matrix, n=3):
-        # Get the similarity scores for the given item
-        item_similarity_scores = similarity_matrix[item_id]
+    # Create a dataframe with the cosine similarity matrix
+    clean_ratings_cosine_similarity_df = pd.DataFrame(clean_ratings_cosine_similarity, columns=get_users(), index=get_users())
 
-        # Sort the similarity scores in descending order
-        item_similarity_scores_sorted = item_similarity_scores.sort_values(ascending=False)
+    # Print the cosine similarity matrix
+    return clean_ratings_cosine_similarity_df
 
-        # Get the top n similar items
-        similar_items = item_similarity_scores_sorted.head(n).index
+def generate_recommendations(clean_ratings_cosine_similarity = clean_ratings_cosine_similarity(), clean_ratings_df = get_ratings(), top_n=3):
 
-        return similar_items
+    target_user = clean_ratings_df[-1:].index[0]
+    # Extract the similarity scores for the target user from the cosine similarity matrix
+    similarity_scores = clean_ratings_cosine_similarity[target_user]
 
-    # Function to make recommendations for a given user
-    def make_recommendations(user_id, similarity_matrix, ratings_df, n=3):
-        # Get the ratings given by the user
-        user_ratings = ratings_df.loc[user_id]
+    # Sort the similarity scores in descending order and select the top N similar users
+    similar_users_indices = np.argsort(similarity_scores)[::-1][:top_n]
 
-        # Get the items already rated by the user
-        rated_items = user_ratings[user_ratings > 0].index
+    # Get the ratings of similar users for items that the target user has not rated
+    similar_users_ratings = clean_ratings_df.iloc[similar_users_indices]
+    target_user_ratings = clean_ratings_df.iloc[target_user]
 
-        # Initialize an empty list to store recommendations
-        recommendations = []
+    # Filter out items that the target user has already rated
+    unrated_items_mask = target_user_ratings.isna()
+    similar_users_ratings = similar_users_ratings.loc[:, unrated_items_mask]
 
-        # Loop through the rated items
-        for item_id in rated_items:
-            # Get the top N similar items for the rated item
-            similar_items = get_top_similar_items(item_id, similarity_matrix, n)
+    # Calculate the weighted average of the ratings of similar users using the similarity scores as weights
+    similarity_scores = similarity_scores[similar_users_indices]
+    weighted_avg_ratings = similar_users_ratings.mul(similarity_scores, axis=0).sum() / similarity_scores.sum()
 
-            # Add the similar items to the recommendations list
-            recommendations.extend(similar_items)
+    # Sort the weighted average ratings in descending order to get the top-rated items
+    recommended_items = weighted_avg_ratings.sort_values(ascending=False)
 
-        # Filter out the items already rated by the user
-        recommendations = list(set(recommendations) - set(rated_items))
-        
-        # Randomly choose n items from the list 
-        recommendations = random.sample(recommendations, n) 
+    # You can now access the recommended items for the target user in the `recommended_items` Series.
+    # For example, to get the top N recommended items for the target user:
+    top_n_recommended_items = recommended_items.head(top_n)
+    # print(top_n_recommended_items)
 
-        return recommendations
+    ###### EXTRA CODE for MAE or other evaluation metric ##########
+    # Extract the actual ratings for the recommended items
+    # actual_ratings = clean_ratings_df.fillna(0).loc[f"user{target_user}", top_n_recommended_items.index]
 
-    # Example usage:
-    # Make recommendations for user with user_id=1, using item-item similarity matrix
-    user_id = clean_ratings_df[-1:].index[0]
-    similarity_matrix = item_similarity_df # Use the converted DataFrame
-    recommendations = make_recommendations(user_id, similarity_matrix, clean_ratings_df, n=3)
+    # Extract the predicted ratings (weighted average ratings) for the recommended items
+    # predicted_ratings = top_n_recommended_items.fillna(0).values
 
-    return recommendations
+
+    return top_n_recommended_items
 
 @app.route('/submit-form', methods=['POST'])
 def submit_form():
@@ -193,7 +188,7 @@ def submit_form():
     # Save the preferred_drink object to the database
     db.preferred_drinks.insert_one(preferred_drink)
     item_recommendations = coffee_similarity(preferred_drink['preferredDrink'])
-    user_recommendations = user_similarity()
+    user_recommendations = generate_recommendations()
     drink_names = data['drink_name']
     descriptions = data['description']
     coffeeList = [ {'drink_name': drink_names[i], 'description': descriptions[i] } for i in range(len(drink_names)) ]

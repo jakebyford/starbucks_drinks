@@ -123,8 +123,8 @@ def get_ratings():
     return clean_ratings_df
 
 def clean_ratings_cosine_similarity(clean_ratings_df = get_ratings()):
+    
     clean_ratings_cosine_similarity = cosine_similarity(clean_ratings_df.fillna(0))
-    # clean_ratings_cosine_similarity.reset_index(inplace=True)
 
     # Create a dataframe with the cosine similarity matrix
     clean_ratings_cosine_similarity_df = pd.DataFrame(clean_ratings_cosine_similarity, columns=get_users(), index=get_users())
@@ -135,6 +135,7 @@ def clean_ratings_cosine_similarity(clean_ratings_df = get_ratings()):
 def generate_recommendations(clean_ratings_cosine_similarity = clean_ratings_cosine_similarity(), clean_ratings_df = get_ratings(), top_n=3):
 
     target_user = clean_ratings_df[-1:].index[0]
+    
     # Extract the similarity scores for the target user from the cosine similarity matrix
     similarity_scores = clean_ratings_cosine_similarity[target_user]
 
@@ -188,7 +189,7 @@ def submit_form():
     # Save the preferred_drink object to the database
     db.preferred_drinks.insert_one(preferred_drink)
     item_recommendations = coffee_similarity(preferred_drink['preferredDrink'])
-    user_recommendations = generate_recommendations()
+    user_recommendations = generate_recommendations(clean_ratings_cosine_similarity = clean_ratings_cosine_similarity(clean_ratings_df = get_ratings()), clean_ratings_df = get_ratings(), top_n=3)
     drink_names = data['drink_name']
     descriptions = data['description']
     coffeeList = [ {'drink_name': drink_names[i], 'description': descriptions[i] } for i in range(len(drink_names)) ]

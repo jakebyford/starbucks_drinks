@@ -131,7 +131,7 @@ def generate_recommendations(top_n=5):
     similarity_scores = clean_ratings_cosine_similarity_df[target_user]
 
     # Sort the similarity scores in descending order and select the top N similar users
-    similar_users_indices = np.argsort(similarity_scores)[::-1][:top_n]
+    similar_users_indices = np.argsort(similarity_scores)[::-1][1:top_n+1]
 
     # Get the ratings of similar users for items that the target user has not rated
     similar_users_ratings = clean_ratings_df.iloc[similar_users_indices]

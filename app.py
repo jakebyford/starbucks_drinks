@@ -170,7 +170,7 @@ def generate_recommendations(clean_ratings_cosine_similarity = clean_ratings_cos
     # predicted_ratings = top_n_recommended_items.fillna(0).values
 
 
-    return top_n_recommended_items
+    return top_n_recommended_items.keys()
 
 @app.route('/submit-form', methods=['POST'])
 def submit_form():

@@ -144,7 +144,7 @@ def generate_recommendations(clean_ratings_cosine_similarity = clean_ratings_cos
 
     # Get the ratings of similar users for items that the target user has not rated
     similar_users_ratings = clean_ratings_df.iloc[similar_users_indices]
-    target_user_ratings = clean_ratings_df.iloc[target_user]
+    target_user_ratings = clean_ratings_df.loc[target_user]
 
     # Filter out items that the target user has already rated
     unrated_items_mask = target_user_ratings.isna()

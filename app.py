@@ -44,6 +44,44 @@ surveys = pd.DataFrame(surveys)
 
 clean_drink_names = [i for i in data['drink_name']]
 
+users = [i for i in surveys['_id']]
+
+# clean the users
+clean_users = []
+count = 0
+for i in users:
+    new_id = "user" + str(count)
+    count += 1
+    clean_users.append(new_id)
+
+ratings = [i for i in surveys['ratings']]
+
+clean_ratings = []
+for i in ratings:
+    clean_i = []
+    for j in i:
+        if j == 'N/A':
+            j = np.nan
+        if j == '1':
+            j = 1
+        if j == '2':
+            j = 2
+        if j == '3':
+            j = 3
+        if j == '4':
+            j = 4
+        if j == '5':
+            j = 5
+        clean_i.append(j)
+    clean_ratings.append(clean_i)
+
+clean_ratings_df = pd.DataFrame(clean_ratings, index=clean_users, columns=clean_drink_names)
+
+clean_ratings_cosine_similarity = cosine_similarity(clean_ratings_df.fillna(0))
+
+# Create a dataframe with the cosine similarity matrix
+clean_ratings_cosine_similarity_df = pd.DataFrame(clean_ratings_cosine_similarity, columns=clean_users, index=clean_users)
+
 # def oneHotEncodeFlavorNotes(flavorNotes):
 #     # Array with length equal to the number of flavor notes you want to encode
 #     encoding = [0, 0, 0]
@@ -83,56 +121,9 @@ def coffee_similarity(preferredDrink):
     query = preferredDrink
     recommendations = [i for i in (cosine_sim_df[query].sort_values(ascending=False)[1:4]).index]
     return recommendations
-
-def get_users():
-    users = [i for i in surveys['_id']]
-
-    # clean the users
-    clean_users = []
-    count = 0
-    for i in users:
-        new_id = "user" + str(count)
-        count += 1
-        clean_users.append(new_id)
-
-    return clean_users
-
-def get_ratings():
-    ratings = [i for i in surveys['ratings']]
-
-    clean_ratings = []
-    for i in ratings:
-        clean_i = []
-        for j in i:
-            if j == 'N/A':
-                j = np.nan
-            if j == '1':
-                j = 1
-            if j == '2':
-                j = 2
-            if j == '3':
-                j = 3
-            if j == '4':
-                j = 4
-            if j == '5':
-                j = 5
-            clean_i.append(j)
-        clean_ratings.append(clean_i)
-
-    clean_ratings_df = pd.DataFrame(clean_ratings, index=get_users(), columns=clean_drink_names)
-    return clean_ratings_df
-
-def clean_ratings_cosine_similarity(clean_ratings_df = get_ratings()):
     
-    clean_ratings_cosine_similarity = cosine_similarity(clean_ratings_df.fillna(0))
 
-    # Create a dataframe with the cosine similarity matrix
-    clean_ratings_cosine_similarity_df = pd.DataFrame(clean_ratings_cosine_similarity, columns=get_users(), index=get_users())
-
-    # Print the cosine similarity matrix
-    return clean_ratings_cosine_similarity_df
-
-def generate_recommendations(clean_ratings_cosine_similarity = clean_ratings_cosine_similarity(), clean_ratings_df = get_ratings(), top_n=3):
+def generate_recommendations(top_n=5):
 
     target_user = clean_ratings_df[-1:].index[0]
     
@@ -140,7 +131,7 @@ def generate_recommendations(clean_ratings_cosine_similarity = clean_ratings_cos
     similarity_scores = clean_ratings_cosine_similarity[target_user]
 
     # Sort the similarity scores in descending order and select the top N similar users
-    similar_users_indices = np.argsort(similarity_scores)[::-1][1:top_n+1]
+    similar_users_indices = np.argsort(similarity_scores)[::-1][:top_n]
 
     # Get the ratings of similar users for items that the target user has not rated
     similar_users_ratings = clean_ratings_df.iloc[similar_users_indices]
@@ -159,7 +150,7 @@ def generate_recommendations(clean_ratings_cosine_similarity = clean_ratings_cos
 
     # You can now access the recommended items for the target user in the `recommended_items` Series.
     # For example, to get the top N recommended items for the target user:
-    top_n_recommended_items = recommended_items.head(top_n)
+    top_n_recommended_items = recommended_items.head(3)
     # print(top_n_recommended_items)
 
     ###### EXTRA CODE for MAE or other evaluation metric ##########
@@ -189,7 +180,7 @@ def submit_form():
     # Save the preferred_drink object to the database
     db.preferred_drinks.insert_one(preferred_drink)
     item_recommendations = coffee_similarity(preferred_drink['preferredDrink'])
-    user_recommendations = generate_recommendations(clean_ratings_cosine_similarity = clean_ratings_cosine_similarity(clean_ratings_df = get_ratings()), clean_ratings_df = get_ratings(), top_n=3)
+    user_recommendations = generate_recommendations(top_n=5)
     drink_names = data['drink_name']
     descriptions = data['description']
     coffeeList = [ {'drink_name': drink_names[i], 'description': descriptions[i] } for i in range(len(drink_names)) ]

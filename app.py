@@ -128,7 +128,7 @@ def generate_recommendations(top_n=5):
     target_user = clean_ratings_df[-1:].index[0]
     
     # Extract the similarity scores for the target user from the cosine similarity matrix
-    similarity_scores = clean_ratings_cosine_similarity[target_user]
+    similarity_scores = clean_ratings_cosine_similarity_df[target_user]
 
     # Sort the similarity scores in descending order and select the top N similar users
     similar_users_indices = np.argsort(similarity_scores)[::-1][:top_n]
